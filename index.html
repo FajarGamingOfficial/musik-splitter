@@ -1,0 +1,141 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Musik Splitter — AI Vocal Remover 2026</title>
+<style>
+:root{--bg:#08080f;--card:#12121e;--line:#23233a;--txt:#fff;--mut:#9ca0b5;--vio:#8b5cf6;--vio2:#a78bfa;--grn:#22c55e;--pur:#a855f7}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(900px 500px at 20% -10%,#2a1a5a 0%,transparent 60%),radial-gradient(800px 400px at 90% 0%,#0e3a2e 0%,transparent 55%),var(--bg);color:var(--txt);font-family:Inter,Segoe UI,system-ui,Arial,sans-serif}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:78px;background:rgba(12,12,20,.9);backdrop-filter:blur(12px);border-right:1px solid var(--line);display:flex;flex-direction:column;align-items:center;padding:20px 0;gap:8px;z-index:30}.sidebar .ic{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;font-size:22px;color:#888}.sidebar .ic.on{background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff;box-shadow:0 8px 24px rgba(139,92,246,.45)}.sidebar small{font-size:10px;color:#888;margin-top:-6px}
+.main{margin-left:78px;padding:18px 28px 140px;max-width:1120px;margin-right:auto}
+.top{display:flex;align-items:center;gap:12px}.logo{font-size:24px;font-weight:900}.logo span{color:var(--vio2)}.pill{margin-left:auto;background:#151527;border:1px solid var(--line);padding:8px 14px;border-radius:999px;font-size:13px;font-weight:700}
+.hero{margin:22px 0 18px}.hero h1{font-size:42px;line-height:1.05;margin:0}.hero h1 i{font-style:normal;background:linear-gradient(90deg,#a78bfa,#22c55e);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.hero p{color:var(--mut);font-size:16px}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.01)),var(--card);border:1px solid var(--line);border-radius:22px;padding:20px}
+.drop{border:2px dashed #3d3d5c;border-radius:20px;padding:32px 18px;text-align:center;cursor:pointer;background:#0e0e18;transition:.2s}.drop:hover,.drop.drag{border-color:var(--vio);background:#15152a}.drop .big{font-size:52px}.drop h3{margin:10px 0 4px}.drop p{color:var(--mut);margin:0}
+.btn{border:0;cursor:pointer;border-radius:999px;padding:13px 24px;font-weight:800;color:#fff;background:linear-gradient(135deg,#8b5cf6,#6d28d9);box-shadow:0 8px 24px rgba(139,92,246,.35)}.btn:disabled{opacity:.5;cursor:not-allowed;box-shadow:none}.btn.green{background:linear-gradient(135deg,#22c55e,#16a34a);box-shadow:0 8px 24px rgba(34,197,94,.3)}.btn.ghost{background:#23233a;box-shadow:none}.btn.dark{background:#1b1b28;box-shadow:none}.btn.sm{padding:9px 16px;font-size:13px}
+.badge{background:#1c1c2e;border:1px solid #333;padding:8px 12px;border-radius:999px;font-size:13px;font-weight:700}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.hidden{display:none!important}
+.circle{width:190px;height:190px;border-radius:50%;background:conic-gradient(#8b5cf6 0%,#222 0%);display:grid;place-items:center;margin:16px auto}.circle>div{width:156px;height:156px;background:#0d0d17;border-radius:50%;display:grid;place-items:center;text-align:center}
+canvas.wave{width:100%;height:62px;background:#0b0b15;border-radius:12px;display:block}
+.stems{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}.stem{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px}.stem.on{border-color:var(--vio);box-shadow:0 0 0 1px var(--vio)}
+.iconBtn{width:46px;height:46px;border-radius:50%;border:0;cursor:pointer;font-size:18px;background:var(--vio);color:#fff;flex-shrink:0}.iconBtn.pause{background:#f59e0b}
+input[type=range]{flex:1;accent-color:var(--vio);min-width:90px}.seek{width:100%}
+.transport{position:fixed;left:78px;right:0;bottom:0;background:rgba(16,16,26,.95);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:12px 22px;display:flex;gap:14px;align-items:center;z-index:25}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#ef4444;color:#fff;padding:12px 18px;border-radius:14px;font-weight:700;z-index:99;max-width:92vw;text-align:center;box-shadow:0 12px 30px rgba(0,0,0,.5)}
+.modalBg{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;place-items:center;z-index:60;padding:16px}.modalBg.open{display:grid}.modal{background:#161625;border:1px solid #333;border-radius:22px;padding:22px;width:min(480px,100%)}
+.check{display:flex;gap:10px;align-items:center;background:#1e1e2e;border-radius:12px;padding:12px;margin:8px 0;cursor:pointer}.check input{width:20px;height:20px;accent-color:var(--vio)}
+.fmt{display:flex;gap:10px}.fmt label{flex:1;text-align:center;background:#1e1e2e;border:2px solid #333;border-radius:12px;padding:12px;cursor:pointer}.fmt input{display:none}.fmt input:checked+span{color:#a78bfa;font-weight:800}
+@media(max-width:760px){.sidebar{display:none}.main{margin-left:0;padding:14px 14px 140px}.transport{left:0}.hero h1{font-size:32px}.stems{grid-template-columns:1fr}}
+</style></head><body>
+<div class="sidebar"><div class="ic on">✨</div><small>Remover</small></div>
+<div class="main">
+<div class="top"><div class="logo">🎵 Musik<span>Splitter</span></div><div class="pill">⚡ Cepet • Gratis • Tanpa Batas</div></div>
+<div id="screenUpload"><div class="hero"><h1>Pisahkan Vokal & Musik.<br><i>Gratis. Tanpa Batas. 2026.</i></h1><p>Upload lagu → AI pisahin jadi Vocal, Drums, Bass & Instrument. Langsung bisa diputar, diatur volumenya, dan di-download.</p></div>
+<div class="card"><div class="drop" id="drop"><div class="big">🎵</div><h3 id="dropTitle">Drop lagu di sini / Klik untuk pilih</h3><p id="dropSub">MP3 / WAV / M4A • Maks 100MB • Lagu 2-3 menit paling cepet</p><div style="margin-top:14px"><span class="btn ghost sm">📂 Pilih File Lagu</span></div></div>
+<div class="row" style="margin-top:16px"><button class="btn" id="goBtn" disabled style="width:100%;font-size:16px">✨ PISAHKAN LAGU</button></div>
+<div class="row" style="margin-top:12px"><span class="badge">✨ AI Demucs</span><span class="badge">🎹 KEY + BPM Otomatis</span><span class="badge">🎧 Play All / Solo</span><span class="badge">💾 Save WAV / MP3</span></div></div>
+<p style="color:var(--mut);font-size:13px;margin-top:12px">Instrument tetap digabung di “Other” biar cepet — tidak dipisah piano/gitar.</p></div>
+<input type="file" id="fileInput" accept=".mp3,.wav,.m4a,.flac,.ogg,.aac,audio/*" hidden>
+<div id="screenProcessing" class="hidden"><div class="card" style="text-align:center;max-width:620px;margin:30px auto"><h2 style="margin:0">Audio processing...</h2><p id="procStatus" style="color:var(--mut)">AI lagi misahin lagu, jangan tutup tab ini ya</p><div class="circle" id="circle"><div><div><div id="procPct" style="font-size:36px;font-weight:900">0%</div><div style="color:var(--mut);font-size:13px">Memproses</div></div></div></div><p id="procFile" style="color:var(--mut)"></p><div class="row" style="justify-content:center"><button class="btn ghost sm" id="cancelBtn">Batal</button></div></div></div>
+<div id="screenResult" class="hidden">
+<div class="row" style="justify-content:space-between"><div><h2 id="filename" style="margin:0">lagu.mp3</h2><p style="color:var(--mut);margin:6px 0">4 stem berhasil dipisah • Atur volume, play bareng atau satu-satu</p></div><div class="row"><span class="badge" id="keyBadge">KEY -</span><span class="badge" id="bpmBadge">BPM -</span><button class="btn ghost sm" id="newSongBtn">＋ Lagu Baru</button></div></div>
+<div class="card" style="margin-top:14px"><div class="row"><b style="width:78px">🎵 Music</b><canvas class="wave" id="waveMusic"></canvas></div><div class="row" style="margin-top:10px"><b style="width:78px">🎤 Vocal</b><canvas class="wave" id="waveVocal"></canvas></div>
+<div class="row" style="margin-top:12px"><span id="timeLabel" style="color:var(--mut)">00:00 / 00:00</span><input type="range" id="seek" class="seek" min="0" max="100" value="0"><button class="btn" id="playAllBtn">▶ Play All</button><button class="btn ghost" id="stopBtn">⏹ Stop</button></div></div>
+<div class="stems" id="stems"></div>
+<div class="row" style="margin-top:16px;justify-content:flex-end"><button class="btn green" id="saveBtn">💾 Save</button></div>
+</div></div>
+<div class="transport" id="player" style="display:none"><button class="iconBtn" id="playAllBtn2">▶</button><span id="transportTitle" style="font-weight:800">Siap diputar</span><span id="transportTime" style="color:var(--mut);margin-left:auto">00:00</span></div>
+<div class="modalBg" id="saveModal"><div class="modal"><h3 style="margin:0">💾 Save Stem</h3><p style="color:var(--mut)">Pilih stem yang mau di-download + formatnya:</p>
+<label class="check"><input type="checkbox" data-stem="vocals" checked> 🎤 Vocal</label><label class="check"><input type="checkbox" data-stem="drums" checked> 🥁 Drums</label><label class="check"><input type="checkbox" data-stem="bass" checked> 🎸 Bass</label><label class="check"><input type="checkbox" data-stem="other" checked> 🎹 Instrument</label>
+<p style="margin:14px 0 8px">Format:</p><div class="fmt"><label><input type="radio" name="fmt" value="wav" checked><span>WAV<br><small style="color:var(--mut)">Kualitas penuh</small></span></label><label><input type="radio" name="fmt" value="mp3"><span>MP3<br><small style="color:var(--mut)">File lebih kecil</small></span></label></div>
+<div class="row" style="margin-top:16px;justify-content:flex-end"><button class="btn ghost" id="closeModal">Batal</button><button class="btn green" id="doSave">⬇ Download Pilihan</button></div><p id="saveNote" style="color:var(--mut);font-size:13px;margin:10px 0 0"></p></div></div>
+<div id="toast" class="toast hidden"></div>
+<script>
+let file=null, uid=null, audios={}, stemsData={}, playing=false, soloKey=null, duration=0, cancelled=false, origAudio=null;
+const $=id=>document.getElementById(id);
+function show(id){['screenUpload','screenProcessing','screenResult'].forEach(s=>$(s).classList.toggle('hidden',s!==id))}
+function fmt(t){if(!isFinite(t))return '00:00';t=Math.floor(t);return String(Math.floor(t/60)).padStart(2,'0')+':'+String(t%60).padStart(2,'0')}
+function toast(msg){const el=$('toast');el.textContent=msg;el.classList.remove('hidden');setTimeout(()=>el.classList.add('hidden'),4500)}
+function setProc(p){p=Math.max(0,Math.min(100,Math.round(p)));$('procPct').textContent=p+'%';$('circle').style.background=`conic-gradient(#8b5cf6 ${p}%,#222 ${p}%)`;let st=$('procStatus');if(p<10)st.textContent='Analyzing BPM & KEY...';else if(p<95)st.textContent='Separating track... ('+p+'% dari Demucs)';else if(p<100)st.textContent='Saving stems...';else st.textContent='Selesai — file beneran udah ada';}
+let dialogOpen=false;
+function openPicker(){if(dialogOpen)return;dialogOpen=true;$('fileInput').click();setTimeout(()=>dialogOpen=false,900)}
+$('drop').addEventListener('click',openPicker);
+$('drop').addEventListener('dragover',e=>{e.preventDefault();$('drop').classList.add('drag')});
+$('drop').addEventListener('dragleave',()=>$('drop').classList.remove('drag'));
+$('drop').addEventListener('drop',e=>{e.preventDefault();$('drop').classList.remove('drag');const f=e.dataTransfer.files[0];if(f)onFile(f)});
+$('fileInput').addEventListener('change',e=>{const f=e.target.files[0];if(f)onFile(f);e.target.value=''});
+function onFile(f){
+  const ok=['.mp3','.wav','.m4a','.flac','.ogg','.aac'];
+  const ext='.'+(f.name.split('.').pop()||'').toLowerCase();
+  if(!ok.includes(ext) && !f.type.startsWith('audio/')){toast('Format '+ext+' belum didukung. Pake MP3 / WAV / M4A.');return}
+  if(f.size>100*1024*1024){toast('File >100MB, kegedean. Pake lagu yang lebih kecil.');return}
+  file=f;$('dropTitle').textContent='✅ '+f.name;$('dropSub').textContent=(f.size/1024/1024).toFixed(1)+' MB • Siap diproses';$('goBtn').disabled=false;
+}
+$('goBtn').addEventListener('click',startSeparate);
+$('newSongBtn').addEventListener('click',()=>{file=null;$('dropTitle').textContent='Drop lagu di sini / Klik untuk pilih';$('dropSub').textContent='MP3 / WAV / M4A • Maks 100MB • Lagu 2-3 menit paling cepet';$('goBtn').disabled=true;show('screenUpload')});
+$('cancelBtn').addEventListener('click',()=>{cancelled=true;show('screenUpload');toast('Dibatalkan.')});
+async function startSeparate(){
+  if(!file){toast('Pilih lagu dulu.');return}
+  cancelled=false;show('screenProcessing');setProc(0);$('procFile').textContent=file.name;$('goBtn').disabled=true;
+  const fd=new FormData();fd.append('audio',file);
+  try{
+    const r=await fetch('/separate',{method:'POST',body:fd});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok) throw new Error(d.error||('Server error '+r.status));
+    uid=d.uid;let stems=null;
+    while(!cancelled){
+      await new Promise(res=>setTimeout(res,1000));
+      const pr=await (await fetch('/progress/'+d.uid)).json();
+      if(pr.error) throw new Error(pr.error);
+      setProc(pr.percent||0);
+      if(pr.done){const rr=await fetch('/result/'+d.uid);if(rr.ok){const rj=await rr.json();if(rj.ready && rj.stems && Object.keys(rj.stems).length===4){stems=rj.stems;stems.original=rj.original;setProc(100);break}} else {setProc(99)}} else {setProc(Math.min(95, pr.percent||0))}
+    }
+    if(cancelled) return;
+    $('keyBadge').textContent='KEY '+(d.chord||'-');$('bpmBadge').textContent='BPM '+(d.bpm?Number(d.bpm).toFixed(1):'-');$('filename').textContent=file.name;$('transportTitle').textContent=file.name;
+    show('screenResult');$('player').style.display='flex';buildStems(stems);
+  }catch(e){show('screenUpload');$('goBtn').disabled=false;toast('Gagal: '+e.message)}
+}
+function buildStems(stems){
+  stemsData=stems;audios={};duration=0;const el=$('stems');el.innerHTML='';
+  if(stems.original){origAudio=new Audio(stems.original);origAudio.preload='auto';}
+  const labels={vocals:['🎤','Vocal','#a78bfa'],drums:['🥁','Drums','#f59e0b'],bass:['🎸','Bass','#22c55e'],other:['🎹','Instrument','#38bdf8']};
+  Object.keys(labels).forEach(k=>{if(!stems[k])return;const a=new Audio(stems[k]);a.preload='auto';audios[k]=a;
+    a.onloadedmetadata=()=>{duration=Math.max(duration,a.duration);$('seek').max=Math.floor(duration);$('timeLabel').textContent='00:00 / '+fmt(duration);drawWave(k)};
+    const div=document.createElement('div');div.className='stem';div.id='stem-'+k;
+    div.innerHTML=`<div class="row"><span style="font-size:22px">${labels[k][0]}</span><b>${labels[k][1]}</b><span class="badge" style="margin-left:auto">${labels[k][2]}</span></div><canvas class="wave" id="wave-${k}" style="margin:10px 0;height:56px"></canvas><div class="row"><button class="iconBtn" data-play="${k}">▶</button><input type="range" min="0" max="100" value="100" data-vol="${k}"><button class="btn ghost sm" data-mute="${k}">Mute</button></div>`;
+    el.appendChild(div)});
+  el.onclick=e=>{const pb=e.target.closest('[data-play]');const mb=e.target.closest('[data-mute]');if(pb)toggleSolo(pb.dataset.play,pb);if(mb)toggleMute(mb.dataset.mute,mb)};
+  el.oninput=e=>{const v=e.target.closest('[data-vol]');if(v)audios[v.dataset.vol].volume=v.value/100};
+  drawWave('vocals','waveVocal');drawWave('other','waveMusic');
+}
+async function drawWave(k,canvasId){const url=stemsData[k];if(!url)return;const cv=$(canvasId||('wave-'+k));if(!cv)return;
+  try{const ctx=new (window.AudioContext||window.webkitAudioContext)();const buf=await (await fetch(url)).arrayBuffer();const dec=await ctx.decodeAudioData(buf);const ch=dec.getChannelData(0);const c=cv.getContext('2d');const W=cv.width=cv.clientWidth*2,H=cv.height=cv.clientHeight*2;c.clearRect(0,0,W,H);c.fillStyle=k==='vocals'?'#8b5cf6':k==='other'?'#22c55e':'#a78bfa';const step=Math.max(1,Math.floor(ch.length/W));for(let x=0;x<W;x++){let mx=0;for(let i=0;i<step;i+=10)mx=Math.max(mx,Math.abs(ch[x*step+i]||0));const h=Math.max(2,mx*H);c.fillRect(x,(H-h)/2,1.5,h)}ctx.close()}catch(e){}}
+function syncTime(){if(duration)$('seek').value=Math.floor(audios.vocals?.currentTime||origAudio?.currentTime||0);$('timeLabel').textContent=fmt(audios.vocals?.currentTime||origAudio?.currentTime||0)+' / '+fmt(duration);$('transportTime').textContent=fmt(audios.vocals?.currentTime||origAudio?.currentTime||0)}
+setInterval(syncTime,500);
+function updatePlayBtn(){const t=playing?'⏸ Pause All':'▶ Play All';$('playAllBtn').textContent=t;$('playAllBtn2').textContent=playing?'⏸':'▶'}
+async function playAll(){
+  const t=audios.vocals?.currentTime||origAudio?.currentTime||0;
+  Object.values(audios).forEach(a=>{a.pause()});
+  if(origAudio){origAudio.currentTime=t;origAudio.play()}
+  if(audios.vocals){audios.vocals.currentTime=t;audios.vocals.play()}
+  soloKey=null;playing=true;document.querySelectorAll('.stem').forEach(s=>s.classList.add('on'));document.querySelectorAll('[data-play]').forEach(b=>{b.textContent='▶';b.classList.remove('pause')});updatePlayBtn()}
+function pauseAll(){Object.values(audios).forEach(a=>a.pause());if(origAudio)origAudio.pause();playing=false;updatePlayBtn()}
+function toggleSolo(k,btn){if(soloKey===k&&!audios[k].paused){audios[k].pause();soloKey=null;btn.textContent='▶';btn.classList.remove('pause');return}Object.entries(audios).forEach(([key,a])=>{if(key===k)a.play();else a.pause()});if(origAudio)origAudio.pause();soloKey=k;playing=false;updatePlayBtn();document.querySelectorAll('[data-play]').forEach(b=>{b.textContent=b.dataset.play===k?'⏸':'▶';b.classList.toggle('pause',b.dataset.play===k)});document.querySelectorAll('.stem').forEach(s=>s.classList.toggle('on',s.id==='stem-'+k))}
+function toggleMute(k,btn){const a=audios[k];a.muted=!a.muted;btn.textContent=a.muted?'Unmute':'Mute';btn.style.background=a.muted?'#ef4444':''}
+$('playAllBtn').onclick=()=>playing?pauseAll():playAll();$('playAllBtn2').onclick=()=>playing?pauseAll():playAll();
+$('stopBtn').onclick=()=>{Object.values(audios).forEach(a=>{a.pause();a.currentTime=0});if(origAudio){origAudio.pause();origAudio.currentTime=0}playing=false;soloKey=null;updatePlayBtn()};
+$('seek').oninput=e=>{const t=Number(e.target.value);Object.values(audios).forEach(a=>a.currentTime=t);if(origAudio)origAudio.currentTime=t};
+$('saveBtn').onclick=()=>{$('saveModal').classList.add('open');$('saveNote').textContent=''};
+$('closeModal').onclick=()=>$('saveModal').classList.remove('open');
+$('saveModal').onclick=e=>{if(e.target.id==='saveModal')$('saveModal').classList.remove('open')};
+$('doSave').onclick=()=>{
+  const f=document.querySelector('input[name="fmt"]:checked').value;
+  const sel=[...document.querySelectorAll('[data-stem]:checked')].map(c=>c.dataset.stem);
+  if(!sel.length){$('saveNote').textContent='⚠ Pilih minimal 1 stem dulu.';return}
+  if(sel.length===4){
+    const a=document.createElement('a');a.href=`/download-all/${uid}?format=${f}&stems=${sel.join(',')}`;a.click();
+    $('saveNote').textContent=`✅ 4 stem (${f.toUpperCase()}) lagi di-download sebagai ZIP...`;
+  } else {
+    sel.forEach((s,i)=>{setTimeout(()=>{const a=document.createElement('a');a.href=`/download/${uid}/${s}?format=${f}`;a.download=`${s}.${f}`;document.body.appendChild(a);a.click();a.remove()},i*600)});
+    $('saveNote').textContent=`✅ ${sel.length} stem (${f.toUpperCase()}) lagi di-download satuan...`;
+  }
+  setTimeout(()=>$('saveModal').classList.remove('open'),900);
+};
+</script></body></html>
